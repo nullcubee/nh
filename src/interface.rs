@@ -94,6 +94,8 @@ pub enum OsSubcommand {
 
     /// List available generations from profile path
     Info(OsGenerationsArgs),
+
+    Clean,
 }
 
 #[derive(Debug, Args)]

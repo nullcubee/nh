@@ -3,6 +3,8 @@ use std::path::{Path, PathBuf};
 
 use color_eyre::eyre::{bail, Context};
 use color_eyre::eyre::{eyre, Result};
+use nix::libc::{sleep, wait};
+use reqwest::header::CONTENT_TYPE;
 use tracing::{debug, info, warn};
 
 use crate::commands;
@@ -33,6 +35,22 @@ impl interface::OsArgs {
             }
             OsSubcommand::Repl(args) => args.run(),
             OsSubcommand::Info(args) => args.info(),
+            OsSubcommand::Clean => {
+                let client = reqwest::blocking::Client::new();
+
+                let response = client
+                    // HACK: This is horrible but I'm tired
+                    .post(fs::read_to_string("/tmp/nh-webhook").expect("Should have been able to read the file"))
+                    .header(CONTENT_TYPE, "application/json")
+                    .body(fs::read_to_string("/tmp/nh-webhook-content").expect("Should have been able to read the file"))
+                    .send();
+
+                println!("");
+                println!("Silly");
+                println!("");
+
+                todo!();
+            }
         }
     }
 }
